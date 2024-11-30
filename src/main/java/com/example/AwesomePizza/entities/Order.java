@@ -11,7 +11,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
-    private String status;  // NEW, IN_PROGRESS, COMPLETED
+    private String status;  // NEW, IN_PROGRESS, COMPLETED, READY_FOR_PICK_UP
     private LocalDateTime orderTime = LocalDateTime.now();
     private Integer queuePosition;
 

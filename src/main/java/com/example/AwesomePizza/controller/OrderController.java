@@ -50,6 +50,28 @@ public class OrderController {
         return orderRepository.save(order);
     }
 
+    @PutMapping("/{id}/readyForPickup")
+    public Order readyForPickup(@PathVariable Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        if (!order.getStatus().equals("COMPLETED")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not yet completed");
+        }
+        order.setStatus("READY_FOR_PICKUP");
+        return orderRepository.save(order);
+    }
+
+    @PutMapping("/{id}/pickup")
+    public Order pickupOrder(@PathVariable Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        if (!order.getStatus().equals("READY_FOR_PICKUP")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not ready for pickup");
+        }
+        order.setStatus("PICKED_UP");
+        return orderRepository.save(order);
+    }
+
     @PutMapping("/takeNextOrder")
     public Order takeNextOrder() {
         List<Order> orders = orderRepository.findAllByStatusOrderByQueuePositionAsc("NEW");
